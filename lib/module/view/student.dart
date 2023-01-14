@@ -10,16 +10,16 @@ String welcomeToJson(Student data) => json.encode(data.toJson());
 
 class Student {
   Student({
-    required this.id,
+    this.id,
     required this.rollno,
     required this.name,
     required this.marks,
   });
 
-  final String id;
+  String? id;
   final int rollno;
   final String name;
-  final int marks;
+  final num marks;
 
   factory Student.fromJson(Map<String, dynamic> json) => Student(
         id: json["id"],

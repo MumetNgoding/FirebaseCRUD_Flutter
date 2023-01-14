@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fhe_template/homepage.dart';
 import 'package:fhe_template/module/view/student.dart';
 import 'package:flutter/material.dart';
 
@@ -43,7 +47,25 @@ class UpdateStudent extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueGrey,
                 ),
-                onPressed: () {},
+                // update student on pressed back to homepage
+                onPressed: () {
+                  Student updateStudent = Student(
+                      id: student.id,
+                      rollno: int.parse(rollController.text),
+                      name: nameController.text,
+                      marks: double.parse(marksController.text));
+                  final CollectionReference =
+                      FirebaseFirestore.instance.collection('students');
+                  CollectionReference.doc(updateStudent.id)
+                      .update(updateStudent.toJson())
+                      .whenComplete(() {
+                    log('Student Update');
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => homepage()),
+                    );
+                  });
+                },
                 child: const Text("Update"),
               ),
               ElevatedButton(

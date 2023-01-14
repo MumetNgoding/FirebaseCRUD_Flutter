@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fhe_template/homepage.dart';
+import 'package:fhe_template/module/view/student.dart';
 import 'package:flutter/material.dart';
 
 class AddStudent extends StatelessWidget {
@@ -39,7 +44,14 @@ class AddStudent extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueGrey,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Student student = Student(
+                    rollno: int.parse(rollController.text),
+                    name: nameController.text,
+                    marks: double.parse(marksController.text),
+                  );
+                  addStudentAndNavigateToHome(student, context);
+                },
                 child: const Text("Save"),
               ),
               ElevatedButton(
@@ -80,5 +92,20 @@ class AddStudent extends StatelessWidget {
                 borderRadius: BorderRadius.all(Radius.circular(5)))),
       ),
     );
+  }
+
+  void addStudentAndNavigateToHome(Student student, BuildContext context) {
+    // reference to firebase
+    final StudentRef = FirebaseFirestore.instance.collection('students').doc();
+    student.id = StudentRef.id;
+    var data = student.toJson();
+    StudentRef.set(data).whenComplete(() {
+      log('User Inserted');
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => homepage()),
+        (route) => false,
+      );
+    });
   }
 }
